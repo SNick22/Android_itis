@@ -1,11 +1,11 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-parcelize'
 }
 
 android {
     compileSdk 33
-    namespace "com.example.task5"
 
     defaultConfig {
         applicationId "com.example.myapplication"
@@ -15,9 +15,6 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
-        buildConfigField("String", "WEATHER_KEY", '"sampleKey"')
-        buildConfigField("String", "WEATHER_BASE_URL", '"https://api.openweathermap.org/data/2.5/"')
     }
 
     buildTypes {
