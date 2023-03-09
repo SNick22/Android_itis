@@ -1,7 +1,8 @@
-package com.example.myapplication
+package com.example.myapplication.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.myapplication.R
 import com.example.myapplication.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -14,7 +15,10 @@ class MainActivity : AppCompatActivity() {
             setContentView(it.root)
         }
         binding?.run {
-
+            supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.container, FirstFragment())
+                .commit()
         }
     }
 }
