@@ -1,4 +1,4 @@
-package com.example.myapplication.ui
+package com.example.myapplication.presentation.main.weather_details
 
 import android.os.Bundle
 import android.view.View
@@ -7,7 +7,7 @@ import com.example.myapplication.R
 import com.example.myapplication.databinding.BottomSheetBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class BottomSheetFragment: BottomSheetDialogFragment(R.layout.bottom_sheet) {
+class WeatherDetailsFragment: BottomSheetDialogFragment(R.layout.bottom_sheet) {
 
     private var binding: BottomSheetBinding? = null
 
@@ -23,10 +23,12 @@ class BottomSheetFragment: BottomSheetDialogFragment(R.layout.bottom_sheet) {
                 tvAirPressureData.text = getInt("pressure").toString()
                 tvWindSpeedData.text = getDouble("speed").toString()
 
-                Glide
-                    .with(requireContext())
-                    .load("https://openweathermap.org/img/wn/${getString("icon")}.png")
-                    .into(ivWeather)
+                getString("icon")?.let {
+                    Glide
+                        .with(requireContext())
+                        .load("https://openweathermap.org/img/wn/${it}.png")
+                        .into(ivWeather)
+                }
             }
         }
     }
@@ -37,7 +39,7 @@ class BottomSheetFragment: BottomSheetDialogFragment(R.layout.bottom_sheet) {
     }
 
     companion object {
-        fun newInstance(bundle: Bundle) = BottomSheetFragment().apply {
+        fun newInstance(bundle: Bundle) = WeatherDetailsFragment().apply {
             arguments = bundle
         }
     }

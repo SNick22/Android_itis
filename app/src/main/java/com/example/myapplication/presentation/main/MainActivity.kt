@@ -1,9 +1,10 @@
-package com.example.myapplication.ui
+package com.example.myapplication.presentation.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.myapplication.R
 import com.example.myapplication.databinding.ActivityMainBinding
+import com.example.myapplication.presentation.main.weather.WeatherFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -17,7 +18,7 @@ class MainActivity : AppCompatActivity() {
         binding?.run {
             supportFragmentManager
                 .beginTransaction()
-                .replace(R.id.container, FirstFragment())
+                .replace(R.id.container, WeatherFragment())
                 .commit()
         }
     }
