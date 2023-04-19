@@ -1,4 +1,4 @@
-package com.example.myapplication.domain.weather
+package com.example.myapplication.domain.weather.current
 
 data class WeatherInfo(
     val city: String,
@@ -7,4 +7,6 @@ data class WeatherInfo(
     val pressure: Int,
     val speed: Double,
     val icon: String?,
+    val lat: Double,
+    val lon: Double
 )

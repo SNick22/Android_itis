@@ -1,6 +1,6 @@
-package com.example.myapplication.data.weather.datasource.remote
+package com.example.myapplication.data.weather.current.datasource.remote
 
-import com.example.myapplication.data.weather.datasource.remote.responce.WeatherResponce
+import com.example.myapplication.data.weather.current.datasource.remote.response.WeatherResponce
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -13,7 +13,7 @@ interface WeatherApi {
 
     @GET("weather")
     suspend fun getWeatherByLocation(
-        @Query("lat") latitude: String,
-        @Query("lon") longitude: String,
+        @Query("lat") latitude: Double,
+        @Query("lon") longitude: Double,
     ): WeatherResponce
 }

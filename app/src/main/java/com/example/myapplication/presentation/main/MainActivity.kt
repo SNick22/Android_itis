@@ -6,20 +6,19 @@ import com.example.myapplication.R
 import com.example.myapplication.databinding.ActivityMainBinding
 import com.example.myapplication.presentation.main.weather.WeatherFragment
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
-    private var binding: ActivityMainBinding? = null
+    private val containerId: Int = R.id.container
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater).also {
-            setContentView(it.root)
+
+        if (savedInstanceState != null) {
+            return
         }
-        binding?.run {
-            supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.container, WeatherFragment())
-                .commit()
-        }
+
+        supportFragmentManager.beginTransaction()
+            .replace(containerId, WeatherFragment.getInstance(), WeatherFragment.WEATHER_FRAGMENT_TAG)
+            .commit()
     }
 }

@@ -6,9 +6,11 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentFirstBinding
+import com.example.myapplication.di.appComponent
+import com.example.myapplication.di.lazyViewModel
+import com.example.myapplication.presentation.main.MainActivity
 import com.example.myapplication.presentation.main.weather_details.WeatherDetailsFragment
 
 
@@ -16,13 +18,16 @@ class WeatherFragment : Fragment(R.layout.fragment_first) {
 
     private var binding: FragmentFirstBinding? = null
 
-    private val viewModel: WeatherViewModel by viewModels {
-        WeatherViewModel.Factory
+    private val viewModel: WeatherViewModel by lazyViewModel {
+        requireContext().appComponent().weatherViewModel().create()
     }
 
     override fun onAttach(context: Context) {
+        requireContext().appComponent()
+            .plusWeatherComponent()
+            .build()
+            .inject(this)
         super.onAttach(context)
-        viewModel.registerActivityResult(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -41,11 +46,12 @@ class WeatherFragment : Fragment(R.layout.fragment_first) {
                 viewModel.navigateToDetails()
             }
         }
-
         observeViewModel()
     }
 
     private fun observeViewModel() {
+        viewModel.registerActivityResult(activity as MainActivity)
+
         with(viewModel) {
             loading.observe(viewLifecycleOwner) {
                 showLoader(it)
@@ -73,6 +79,8 @@ class WeatherFragment : Fragment(R.layout.fragment_first) {
                         bundle.putInt("pressure", pressure)
                         bundle.putDouble("speed", speed)
                         bundle.putString("icon", icon)
+                        bundle.putDouble("lat", lat)
+                        bundle.putDouble("lon", lon)
                     }
                     WeatherDetailsFragment.newInstance(bundle).show(parentFragmentManager, null)
                     navigateDetails.value = false
@@ -92,5 +100,11 @@ class WeatherFragment : Fragment(R.layout.fragment_first) {
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
+    }
+
+    companion object {
+        const val WEATHER_FRAGMENT_TAG = "WEATHER_FRAGMENT_TAG"
+
+        fun getInstance() = WeatherFragment()
     }
 }

@@ -5,16 +5,17 @@ import android.content.Context
 import android.location.LocationManager
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.*
-import androidx.lifecycle.viewmodel.CreationExtras
-import com.example.myapplication.di.DataContainer
 import com.example.myapplication.domain.location.GetLocationUseCase
-import com.example.myapplication.domain.weather.GetWeatherByCityNameUseCase
-import com.example.myapplication.domain.weather.GetWeatherByLocationUseCase
-import com.example.myapplication.domain.weather.WeatherInfo
+import com.example.myapplication.domain.weather.current.GetWeatherByCityNameUseCase
+import com.example.myapplication.domain.weather.current.GetWeatherByLocationUseCase
+import com.example.myapplication.domain.weather.current.WeatherInfo
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.launch
 
-class WeatherViewModel(
+class WeatherViewModel @AssistedInject constructor(
     private val getWeatherByCityNameUseCase: GetWeatherByCityNameUseCase,
     private val getWeatherByLocationUseCase: GetWeatherByLocationUseCase,
     private val getLocationUseCase: GetLocationUseCase
@@ -32,13 +33,14 @@ class WeatherViewModel(
     val message: LiveData<String?>
         get() = _message
 
+
     val navigateDetails = MutableLiveData(false)
 
     private var permission: ActivityResultLauncher<String>? = null
 
-    fun registerActivityResult(fragment: WeatherFragment) {
-        permission = fragment.registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-            if (it && isLocationEnabled(fragment)) {
+    fun registerActivityResult(activity: AppCompatActivity) {
+        permission = activity.registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+            if (it && isLocationEnabled(activity)) {
                 getWeather(true)
             }
         }
@@ -76,8 +78,8 @@ class WeatherViewModel(
         navigateDetails.value = true
     }
 
-    private fun isLocationEnabled(fragment: WeatherFragment): Boolean {
-        val locationManager: LocationManager = fragment.context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    private fun isLocationEnabled(activity: AppCompatActivity): Boolean {
+        val locationManager: LocationManager = activity.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val isEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
         if (!isEnabled) {
             _message.value = "Please turn on location"
@@ -85,23 +87,8 @@ class WeatherViewModel(
         return isEnabled
     }
 
-    companion object {
-        val Factory = object : ViewModelProvider.Factory {
-
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(
-                modelClass: Class<T>,
-                extras: CreationExtras
-            ): T {
-                val getWeatherByCityNameUseCase = DataContainer.weatherByCityNameUseCase
-                val getWeatherByLocationUseCase = DataContainer.weatherByLocationUseCase
-                val getLocationUseCase = DataContainer.locationUseCase
-                return WeatherViewModel(
-                    getWeatherByCityNameUseCase,
-                    getWeatherByLocationUseCase,
-                    getLocationUseCase
-                ) as T
-            }
-        }
+    @AssistedFactory
+    interface Factory {
+        fun create(): WeatherViewModel
     }
 }

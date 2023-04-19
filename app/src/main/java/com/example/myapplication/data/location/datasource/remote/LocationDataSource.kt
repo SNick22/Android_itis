@@ -21,8 +21,8 @@ class LocationDataSource(
             override fun isCancellationRequested() = false
         }).await().let {
             LocationInfo(
-                latitude = it.latitude.toString(),
-                longitude = it.longitude.toString()
+                latitude = it.latitude,
+                longitude = it.longitude
             )
         }
 }

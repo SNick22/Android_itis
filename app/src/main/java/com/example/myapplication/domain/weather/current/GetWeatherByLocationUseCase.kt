@@ -1,15 +1,16 @@
-package com.example.myapplication.domain.weather
+package com.example.myapplication.domain.weather.current
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class GetWeatherByCityNameUseCase(
+class GetWeatherByLocationUseCase(
     private val repository: WeatherRepository
 ) {
 
     suspend operator fun invoke(
-        city: String
+        latitude: Double,
+        longitude: Double
     ) = withContext(Dispatchers.IO) {
-        repository.getWeatherByCityName(city)
+        repository.getWeatherByLocation(latitude, longitude)
     }
 }
